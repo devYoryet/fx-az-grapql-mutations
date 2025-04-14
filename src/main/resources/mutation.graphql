@@ -1,0 +1,32 @@
+type User {
+  userId: ID!
+  username: String!
+  email: String!
+  passwordHash: String!
+  firstName: String
+  lastName: String
+  active: Boolean!
+  createdAt: String
+  updatedAt: String
+  roles: [Role]
+}
+
+type Role {
+  roleId: ID!
+  roleName: String!
+  description: String
+  createdAt: String
+  updatedAt: String
+}
+
+# Es obligatorio tener al menos una operación Query
+type Query {
+  # Puedes definir una consulta simple que devuelva un valor de placeholder
+  _dummy: String
+}
+
+type Mutation {
+  createUser(username: String!, email: String!, passwordHash: String!, firstName: String, lastName: String, active: Boolean): User
+  createRole(roleName: String!, description: String): Role
+  assignRoleToUser(userId: ID!, roleId: ID!): User
+}
