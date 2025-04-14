@@ -90,6 +90,55 @@ public class GraphQLMutationProvider {
 
                             return roleDAO.createRole(role);
                         })
+                        .dataFetcher("updateUser", environment -> {
+                            // Obtener argumentos
+                            Long userId = Long.parseLong(environment.getArgument("userId"));
+
+                            // Primero obtenemos el usuario existente
+                            User existingUser = userDAO.getUserById(userId);
+                            if (existingUser == null) {
+                                throw new RuntimeException("Usuario no encontrado con ID: " + userId);
+                            }
+
+                            // Actualizar solo los campos proporcionados
+                            if (environment.containsArgument("username")) {
+                                existingUser.setUsername(environment.getArgument("username"));
+                            }
+                            if (environment.containsArgument("email")) {
+                                existingUser.setEmail(environment.getArgument("email"));
+                            }
+                            if (environment.containsArgument("passwordHash")) {
+                                existingUser.setPasswordHash(environment.getArgument("passwordHash"));
+                            }
+                            if (environment.containsArgument("firstName")) {
+                                existingUser.setFirstName(environment.getArgument("firstName"));
+                            }
+                            if (environment.containsArgument("lastName")) {
+                                existingUser.setLastName(environment.getArgument("lastName"));
+                            }
+                            if (environment.containsArgument("active")) {
+                                existingUser.setActive(environment.getArgument("active"));
+                            }
+
+                            // Actualizar el usuario en la base de datos
+                            boolean updated = userDAO.updateUser(existingUser);
+                            if (!updated) {
+                                throw new RuntimeException("Error al actualizar usuario con ID: " + userId);
+                            }
+
+                            // Retornar el usuario actualizado
+                            return userDAO.getUserById(userId);
+                        })
+                        .dataFetcher("deleteUser", environment -> {
+                            // Obtener argumentos
+                            Long userId = Long.parseLong(environment.getArgument("userId"));
+
+                            // Eliminar el usuario
+                            boolean deleted = userDAO.deleteUser(userId);
+
+                            // Retornar el resultado de la operación
+                            return deleted;
+                        })
                         .dataFetcher("assignRoleToUser", environment -> {
                             // Obtener argumentos
                             Long userId = Long.parseLong(environment.getArgument("userId"));

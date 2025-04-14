@@ -29,4 +29,8 @@ type Mutation {
   createUser(username: String!, email: String!, passwordHash: String!, firstName: String, lastName: String, active: Boolean): User
   createRole(roleName: String!, description: String): Role
   assignRoleToUser(userId: ID!, roleId: ID!): User
+  # Nuevas operaciones
+  updateUser(userId: ID!, username: String, email: String, passwordHash: String, firstName: String, lastName: String, active: Boolean): User
+  deleteUser(userId: ID!): Boolean
+
 }
